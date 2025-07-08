@@ -14,10 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Decode and Show Team ID from Provisioning Profile
+      - name: Setup provisioning profile and certificate
         run: |
+          echo "$CERTIFICATE_P12" | base64 -d > certificate.p12
           echo "$PROVISIONING_PROFILE" | base64 -d > profile.mobileprovision
-          echo "🔍 Extracting Team ID..."
-          security cms -D -i profile.mobileprovision | xmllint --xpath "string(//key[.='TeamIdentifier']/following-sibling::array/string[1])" -
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          security create-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$P12_PASSWORD" -T /usr/bin/codesign
+          security list-keychains -s build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "" build.keychain
         env:
+          CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
           PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
+          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+
+      - name: Build iOS Project
+        run: |
+          xcodebuild -project Overlay.xcodeproj \
+            -scheme Overlay \
+            -sdk iphoneos \
+            -configuration Release \
+            DEVELOPMENT_TEAM=VW24HLY7HY \
+            CODE_SIGN_IDENTITY="iPhone Developer" \
+            PROVISIONING_PROFILE_SPECIFIER="zwCam" \
+            PRODUCT_BUNDLE_IDENTIFIER="com.zwcam.overlay" \
+            clean build
