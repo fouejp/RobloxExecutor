@@ -1,39 +1,13 @@
-name: Build iOS Executor
-
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: macos-latest
-    env:
-      CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
-      PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
-      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Certificate
-        run: |
-          echo "$CERTIFICATE_P12" | base64 --decode > cert.p12
-          security import cert.p12 -k ~/Library/Keychains/login.keychain -P "$P12_PASSWORD" -T /usr/bin/codesign
-
-      - name: Setup Provisioning Profile
-        run: |
-          echo "$PROVISIONING_PROFILE" | base64 --decode > profile.mobileprovision
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
-
-      - name: Build Project
-        run: |
-          xcodebuild -project Overlay.xcodeproj -scheme Overlay -sdk iphoneos -configuration Release CODE_SIGN_IDENTITY="iPhone Developer" PROVISIONING_PROFILE_SPECIFIER="YOUR_PROFILE_NAME"
-
-      - name: Package .ipa
-        run: |
-          mkdir -p build/Release-iphoneos/Payload
-          cp -r build/Release-iphoneos/Overlay.app build/Release-iphoneos/Payload/
-          cd build/Release-iphoneos && zip -r Executor.ipa Payload
+- name: Build iOS Project
+  run: |
+    xcodebuild -project Overlay.xcodeproj \
+      -scheme Overlay \
+      -sdk iphoneos \
+      -configuration Release \
+      CODE_SIGN_IDENTITY="iPhone Developer" \
+      PROVISIONING_PROFILE_SPECIFIER="YOUR_PROFILE_NAME" \
+      PRODUCT_BUNDLE_IDENTIFIER="com.zwcam.overlay"
+  env:
+    CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
+    PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
+    P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
