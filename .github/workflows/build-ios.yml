@@ -41,3 +41,22 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="zwCam" \
             PRODUCT_BUNDLE_IDENTIFIER="com.zwcam.overlay" \
             clean build
+
+      - name: Find built app
+        id: find_app
+        run: |
+          APP_PATH=$(find ./build -name "*.app" | head -n 1)
+          echo "app_path=$APP_PATH" >> $GITHUB_OUTPUT
+
+      - name: Create IPA
+        run: |
+          mkdir -p Payload
+          cp -r "${{ steps.find_app.outputs.app_path }}" Payload/
+          zip -r Overlay.ipa Payload
+        shell: bash
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Overlay.ipa
+          path: Overlay.ipa
