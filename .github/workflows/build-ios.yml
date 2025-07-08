@@ -1,31 +1,7 @@
-name: Build iOS
-
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: macos-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up keychain and certificate
-        uses: apple-actions/import-codesign-certs@v1
-        with:
-          p12-file-base64: ${{ secrets.CERTIFICATE_P12 }}
-          p12-password: ${{ secrets.P12_PASSWORD }}
-          provisioning-profile-base64: ${{ secrets.PROVISIONING_PROFILE }}
-
-      - name: Build iOS Project
-        run: |
-          xcodebuild -project Overlay.xcodeproj \
-            -scheme Overlay \
-            -sdk iphoneos \
-            -configuration Release \
-            CODE_SIGN_IDENTITY="iPhone Developer" \
-            PROVISIONING_PROFILE_SPECIFIER="zwCam" \
-            PRODUCT_BUNDLE_IDENTIFIER="com.zwcam.overlay"
+- name: Decode and Show Team ID from Provisioning Profile
+  run: |
+    echo "$PROVISIONING_PROFILE" | base64 -d > profile.mobileprovision
+    echo "🔍 Extracting Team ID..."
+    security cms -D -i profile.mobileprovision | grep -A1 TeamIdentifier
+  env:
+    PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
