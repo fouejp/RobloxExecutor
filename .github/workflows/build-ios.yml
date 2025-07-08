@@ -1,13 +1,31 @@
-- name: Build iOS Project
-  run: |
-    xcodebuild -project Overlay.xcodeproj \
-      -scheme Overlay \
-      -sdk iphoneos \
-      -configuration Release \
-      CODE_SIGN_IDENTITY="iPhone Developer" \
-      PROVISIONING_PROFILE_SPECIFIER="YOUR_PROFILE_NAME" \
-      PRODUCT_BUNDLE_IDENTIFIER="com.zwcam.overlay"
-  env:
-    CERTIFICATE_P12: ${{ secrets.CERTIFICATE_P12 }}
-    PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
-    P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+name: Build iOS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up keychain and certificate
+        uses: apple-actions/import-codesign-certs@v1
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATE_P12 }}
+          p12-password: ${{ secrets.P12_PASSWORD }}
+          provisioning-profile-base64: ${{ secrets.PROVISIONING_PROFILE }}
+
+      - name: Build iOS Project
+        run: |
+          xcodebuild -project Overlay.xcodeproj \
+            -scheme Overlay \
+            -sdk iphoneos \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="iPhone Developer" \
+            PROVISIONING_PROFILE_SPECIFIER="zwCam" \
+            PRODUCT_BUNDLE_IDENTIFIER="com.zwcam.overlay"
