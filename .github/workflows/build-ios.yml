@@ -56,7 +56,7 @@ jobs:
         shell: bash
 
       - name: Upload IPA Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Overlay.ipa
           path: Overlay.ipa
