@@ -1,7 +1,23 @@
-- name: Decode and Show Team ID from Provisioning Profile
-  run: |
-    echo "$PROVISIONING_PROFILE" | base64 -d > profile.mobileprovision
-    echo "🔍 Extracting Team ID..."
-    security cms -D -i profile.mobileprovision | grep -A1 TeamIdentifier
-  env:
-    PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
+name: Build iOS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Decode and Show Team ID from Provisioning Profile
+        run: |
+          echo "$PROVISIONING_PROFILE" | base64 -d > profile.mobileprovision
+          echo "🔍 Extracting Team ID..."
+          security cms -D -i profile.mobileprovision | grep -A1 TeamIdentifier
+        env:
+          PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
