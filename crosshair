@@ -38,7 +38,7 @@ local drawings = {
     crosshair = {},
     text = {
         Drawing.new('Text', {Size = 13, Font = 2, Outline = true, Text = 'Rogue', Color = Color3.new(1,1,1)}),
-        Drawing.new('Text', {Size = 13, Font = 2, Outline = true, Text = '.tech'}),
+        Drawing.new('Text', {Size = 13, Font = 2, Outline = true, Text = '.Tech'}),
     }
 }
 
