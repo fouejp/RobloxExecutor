@@ -387,31 +387,58 @@ end
                 Visible = false,
             }, TabFrames)
 
-            local Left = library:create("Frame", {
-                Name = "Left",
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0, 8, 0, 14),
-                Size = UDim2.new(0, 282, 0, 395),
-            }, SectionFrame)
+            -- make scrollable holders for left & right sides
+            local LeftScroll = library:create("ScrollingFrame", {
+            Name = "LeftScroll",
+            BackgroundTransparency = 1,
+            Position = UDim2.new(0, 8, 0, 14),
+            Size = UDim2.new(0, 282, 0, 395),
+            CanvasSize = UDim2.new(0, 0, 0, 0),
+            AutomaticCanvasSize = Enum.AutomaticSize.Y,
+            ScrollingDirection = Enum.ScrollingDirection.Y,
+            ScrollBarThickness = 4,
+            ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60),
+            BorderSizePixel = 0,
+  }, SectionFrame)
 
-            local UIListLayout = library:create("UIListLayout", {
-                HorizontalAlignment = Enum.HorizontalAlignment.Center,
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, 12),
-            }, Left)
+           local Left = library:create("Frame", {
+           Name = "Left",
+           BackgroundTransparency = 1,
+           Size = UDim2.new(1, 0, 1, 0),
+  }, LeftScroll)
 
-            local Right = library:create("Frame", {
-                Name = "Right",
-                BackgroundTransparency = 1,
-                Position = UDim2.new(0, 298, 0, 14),
-                Size = UDim2.new(0, 282, 0, 395),
-            }, SectionFrame)
+           library:create("UIListLayout", {
+           HorizontalAlignment = Enum.HorizontalAlignment.Center,
+           SortOrder = Enum.SortOrder.LayoutOrder,
+           Padding = UDim.new(0, 12),
+  }, Left)
 
-            local UIListLayout = library:create("UIListLayout", {
-                HorizontalAlignment = Enum.HorizontalAlignment.Center,
-                SortOrder = Enum.SortOrder.LayoutOrder,
-                Padding = UDim.new(0, 12),
-            }, Right)
+          -- right side scroll
+          local RightScroll = library:create("ScrollingFrame", {
+          Name = "RightScroll",
+          BackgroundTransparency = 1,
+          Position = UDim2.new(0, 298, 0, 14),
+          Size = UDim2.new(0, 282, 0, 395),
+          CanvasSize = UDim2.new(0, 0, 0, 0),
+          AutomaticCanvasSize = Enum.AutomaticSize.Y,
+          ScrollingDirection = Enum.ScrollingDirection.Y,
+          ScrollBarThickness = 4,
+          ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60),
+          BorderSizePixel = 0,
+  }, SectionFrame)
+
+          local Right = library:create("Frame", {
+          Name = "Right",
+          BackgroundTransparency = 1,
+          Size = UDim2.new(1, 0, 1, 0),
+  }, RightScroll)
+
+         library:create("UIListLayout", {
+         HorizontalAlignment = Enum.HorizontalAlignment.Center,
+         SortOrder = Enum.SortOrder.LayoutOrder,
+         Padding = UDim.new(0, 12),
+  }, Right)
+
 
             SectionButton.MouseButton1Down:Connect(function()
                 for _,SectionButtons in pairs (TabSections:GetChildren()) do
