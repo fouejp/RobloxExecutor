@@ -183,7 +183,7 @@ function library.new(library_title, cfg_location)
         BackgroundColor3 = Color3.fromRGB(15, 15, 15),
         BorderColor3 = Color3.fromRGB(78, 93, 234),
         Position = UDim2.new(0.5, 0, 0.5, 0),
-        Size = UDim2.new(0, 650, 0, 500),
+        Size = UDim2.new(0, 680, 0, 500),
         Image = "http://www.roblox.com/asset/?id=7300333488",
         AutoButtonColor = false,
         Modal = true,
@@ -450,7 +450,7 @@ end
                 local Border = library:create("Frame", {
                     BackgroundColor3 = Color3.fromRGB(5, 5, 5),
                     BorderColor3 = Color3.fromRGB(30, 30, 30),
-                    Size = UDim2.new(1, 0, 0, 15),
+                    Size = UDim2.new(1, 0, 0, 20),
                 }, actual_side)
 
                 local Container = library:create("Frame", {
@@ -474,7 +474,7 @@ end
                     AnchorPoint = Vector2.new(0.5, 0),
                     BackgroundTransparency = 1,
                     Position = UDim2.new(0.5, 0, 0, -8),
-                    Size = UDim2.new(1, 0, 0, 10),
+                    Size = UDim2.new(1, 0, 0, 15),
                     Font = Enum.Font.Ubuntu,
                     Text = sector_name,
                     TextColor3 = Color3.fromRGB(255, 255, 255),
@@ -489,7 +489,7 @@ end
                         Name = "LineFrame",
                         BackgroundTransparency = 1,
                         Position = UDim2.new(0, 0, 0, 0),
-                        Size = UDim2.new(1, 0, 0, thickness * 2),
+                        Size = UDim2.new(0, 250, 0, thickness * 3),
                     }, Container)
 
                     local Line = library:create("Frame", {
