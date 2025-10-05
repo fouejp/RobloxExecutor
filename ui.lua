@@ -401,30 +401,36 @@ end
             BorderSizePixel = 0,
   }, SectionFrame)
 
-           local Left = library:create("Frame", {
-           Name = "Left",
-           BackgroundTransparency = 1,
-           Size = UDim2.new(1, 0, 1, 0),
+            local Left = library:create("Frame", {
+            Name = "Left",
+            BackgroundTransparency = 1,
+            Size = UDim2.new(1, 0, 1, 0),
   }, LeftScroll)
 
-           library:create("UIListLayout", {
-           HorizontalAlignment = Enum.HorizontalAlignment.Center,
-           SortOrder = Enum.SortOrder.LayoutOrder,
-           Padding = UDim.new(0, 12),
+            library:create("UIListLayout", {
+            HorizontalAlignment = Enum.HorizontalAlignment.Center,
+            SortOrder = Enum.SortOrder.LayoutOrder,
+            Padding = UDim.new(0, 12),
   }, Left)
 
-          -- right side scroll
-          local RightScroll = library:create("ScrollingFrame", {
-          Name = "RightScroll",
-          BackgroundTransparency = 1,
-          Position = UDim2.new(0, 298, 0, 14),
-          Size = UDim2.new(0, 282, 0, 395),
-          CanvasSize = UDim2.new(0, 0, 0, 0),
-          AutomaticCanvasSize = Enum.AutomaticSize.Y,
-          ScrollingDirection = Enum.ScrollingDirection.Y,
-          ScrollBarThickness = 4,
-          ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60),
-          BorderSizePixel = 0,
+            -- 👇 add this block
+            library:create("UIPadding", {
+            PaddingTop = UDim.new(0, 10),      -- moves sector titles down slightly
+            PaddingBottom = UDim.new(0, 8),    -- adds breathing room at bottom
+  }, Left)
+
+           -- right side scroll
+           local RightScroll = library:create("ScrollingFrame", {
+           Name = "RightScroll",
+           BackgroundTransparency = 1,
+           Position = UDim2.new(0, 298, 0, 14),
+           Size = UDim2.new(0, 282, 0, 395),
+           CanvasSize = UDim2.new(0, 0, 0, 0),
+           AutomaticCanvasSize = Enum.AutomaticSize.Y,
+           ScrollingDirection = Enum.ScrollingDirection.Y,
+           ScrollBarThickness = 4,
+           ScrollBarImageColor3 = Color3.fromRGB(60, 60, 60),
+           BorderSizePixel = 0,
   }, SectionFrame)
 
           local Right = library:create("Frame", {
@@ -437,7 +443,14 @@ end
          HorizontalAlignment = Enum.HorizontalAlignment.Center,
          SortOrder = Enum.SortOrder.LayoutOrder,
          Padding = UDim.new(0, 12),
-  }, Right)
+ }, Right)
+
+         -- 👇 add this block too
+        library:create("UIPadding", {
+        PaddingTop = UDim.new(0, 10),
+        PaddingBottom = UDim.new(0, 8),
+ }, Right)
+
 
 
             SectionButton.MouseButton1Down:Connect(function()
