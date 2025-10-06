@@ -642,6 +642,16 @@ end
                         end)
                         element:set_value(value, true)
 
+                        -- Add public SetValue alias for config syncing
+                        function element:SetValue(val)
+                        if type(val) == "table" and val.Toggle ~= nil then
+                        self:set_value({Toggle = val.Toggle})
+                        else
+                        -- support plain booleans (true/false)
+                        self:set_value({Toggle = val})
+                       end
+                     end
+
                         local has_extra = false
                         function element:add_keybind(key_default, key_callback)
                             local keybind = {}
@@ -1335,6 +1345,16 @@ end
                             end
                         end
                         element:set_value(value, true)
+
+                        function element:SetValue(val)
+                        if type(val) == "table" and val.Dropdown ~= nil then
+                        self:set_value({Dropdown = val.Dropdown})
+                        else
+                        self:set_value({Dropdown = val})
+                       end
+                     end
+
+
                     elseif type == "Combo" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 45)
 
@@ -1594,6 +1614,15 @@ end
                             end
                         end
                         element:set_value(value, true)
+
+                        function element:SetValue(val)
+                        if type(val) == "table" and val.Combo ~= nil then
+                        self:set_value({Combo = val.Combo})
+                        else
+                        self:set_value({Combo = val})
+                      end
+                    end
+  
                     elseif type == "Button" then
                         Border.Size = Border.Size + UDim2.new(0, 0, 0, 30)
 
@@ -1703,6 +1732,15 @@ end
                             end
                         end
                         element:set_value(value, true)
+
+                        function element:SetValue(val)
+                        if type(val) == "table" and val.Text then
+                        self:set_value({Text = val.Text})
+                        else
+                        self:set_value({Text = tostring(val)})
+                      end
+                    end
+
                     elseif type == "Scroll" then
                         local scrollsize = data.scrollsize and data.scrollsize or 5
 
@@ -2169,7 +2207,14 @@ end
                             end
                         end
                         element:set_value(value, true)
-                    end
+                        function element:SetValue(val)
+                        if type(val) == "table" and val.Slider then
+                        self:set_value(val)
+                        elseif tonumber(val) then
+                        self:set_value({Slider = tonumber(val)})
+                       end
+                     end
+                   end
 
                     menu.on_load_cfg:Connect(function()
                         if type ~= "Button" and type ~= "Scroll" then
