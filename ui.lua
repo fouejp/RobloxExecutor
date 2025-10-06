@@ -1755,6 +1755,102 @@ end
                             HorizontalAlignment = Enum.HorizontalAlignment.Center,
                             SortOrder = Enum.SortOrder.LayoutOrder,
                         }, ScrollFrame)
+                         
+                        -- store buttons for dynamic updates
+                        local scroll_buttons = {}
+
+                        -- method to update options dynamically
+                        function element:set_options(newOptions)
+                        newOptions = newOptions or {}
+                        value.Scroll = newOptions[1] -- default selected
+
+                        -- destroy old buttons
+                        for _, btn in pairs(scroll_buttons) do
+                        if btn and btn.Parent then
+                        btn:Destroy()
+                      end
+                   end
+                       scroll_buttons = {}
+
+                       -- update CanvasSize
+                       ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, #newOptions * 20)
+
+                       -- create new buttons
+                       local first = true
+                       for _, v in ipairs(newOptions) do
+                       local Button = library:create("TextButton", {
+                       Name = v,
+                       BackgroundColor3 = Color3.fromRGB(25, 25, 25),
+                       BorderColor3 = Color3.fromRGB(0, 0, 0),
+                       BorderSizePixel = 0,
+                       Position = UDim2.new(0, 0, 0, 20),
+                       Size = UDim2.new(1, 0, 0, 20),
+                       AutoButtonColor = false,
+                       Font = Enum.Font.SourceSans,
+                       Text = "",
+                       TextColor3 = Color3.fromRGB(0, 0, 0),
+                       TextSize = 14,
+        }, ScrollFrame)
+
+                       scroll_buttons[#scroll_buttons+1] = Button
+
+                       local ButtonText = library:create("TextLabel", {
+                       Name = "ButtonText",
+                       BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+                       BackgroundTransparency = 1,
+                       Position = UDim2.new(0, 7, 0, 0),
+                       Size = UDim2.new(0, 210, 1, 0),
+                       Font = Enum.Font.Ubuntu,
+                       Text = v,
+                       TextColor3 = Color3.fromRGB(150, 150, 150),
+                       TextSize = 14,
+                       TextXAlignment = Enum.TextXAlignment.Left,
+        }, Button)
+
+                       local Decoration = library:create("Frame", {
+                       Name = "Decoration",
+                       Parent = Button,
+                       BackgroundColor3 = Color3.fromRGB(84, 101, 255),
+                       BorderSizePixel = 0,
+                       Size = UDim2.new(0, 1, 1, 0),
+                       Visible = false,
+        }, Button)
+
+                       -- Mouse interactions
+                       local mouse_in = false
+                       Button.MouseEnter:Connect(function()
+                       mouse_in = true
+                       if value.Scroll ~= v then
+                       library:tween(ButtonText, TweenInfo.new(0.2, Enum.EasingStyle.Quad,          Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(200, 200, 200)})
+            end
+        end)
+        Button.MouseLeave:Connect(function()
+            mouse_in = false
+            if value.Scroll ~= v then
+                library:tween(ButtonText, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(150, 150, 150)})
+            end
+        end)
+        Button.MouseButton1Down:Connect(function()
+            for _, b in pairs(scroll_buttons) do
+                b.Decoration.Visible = false
+                library:tween(b.ButtonText, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(150, 150, 150)})
+            end
+
+            Decoration.Visible = true
+            library:tween(ButtonText, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextColor3 = Color3.fromRGB(255, 255, 255)})
+
+            value.Scroll = v
+            do_callback()
+        end)
+
+        if first then
+            first = false
+            Decoration.Visible = true
+            ButtonText.TextColor3 = Color3.fromRGB(255, 255, 255)
+        end
+    end
+end
+
 
                         local scroll_is_first = true
                         for _,v in next, data.options do
